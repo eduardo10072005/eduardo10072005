@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site MEI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff; 
+    }
+    .help-btn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px; 
+      background-color: hsl(138, 86%, 27%); 
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      z-index: 1000; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .help-btn:hover {
+      background-color: hsl(133, 78%, 60%); 
+    }
+    header {
+      background-image: url(https://png.pngtree.com/background/20240412/original/pngtree-d-render-of-modern-dark-office-room-with-ample-copy-space-picture-image_8464664.jpg);
+      color: white;
+      text-align: center;
+      padding: 1em;
+    }
+    main {
+      padding: 2em;
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    form {
+      margin-bottom: 2em;
+      padding: 1em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #ffffff; 
+    }
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin: 0.5em 0;
+    }
+    label {
+      font-weight: bold;
+    }
+    input {
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 0.7em;
+      background-color: hsl(138, 86%, 36%); 
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    button:hover {
+      background-color: hsl(155, 65%, 46%); 
+    }
+    .error {
+      color: red;
+      margin-top: 1em;
+    }
+    .hidden {
+      display: none;
+    }
+    .logout-btn {
+      display: block;
+      margin-top: 1em;
+      padding: 0.7em;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .logout-btn:hover {
+      background-color: #e53935;
+    }
+    progress {
+      width: 100%;
+      height: 20px;
+      margin: 0.5em 0;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: Arial, sans-serif; 
+    }
+  </style>
+</head>
+<body>
+  <button class="help-btn" onclick="showHelp()">Ajuda</button> 
+
+  <header>
+    <h1>Bem-vindo ao site MEI</h1>
+  </header>
+
+  <main>
+    <section id="register">
+      <h2>Registrar</h2>
+      <form id="register-form">
+        <label for="register-username">Usuário:</label>
+        <input type="text" id="register-username" name="username" required>
+        <label for="register-password">Senha:</label>
+        <input type="password" id="register-password" name="password" required>
+        <label for="register-cpf">CPF:</label>
+        <input type="text" id="register-cpf" name="cpf" required>
+        <label for="register-dob">Data de Nascimento:</label>
+        <input type="date" id="register-dob" name="dob" required>
+        <label for="register-address">Endereço Empresarial:</label>
+        <input type="text" id="register-address" name="address" required>
+        <progress id="progress-bar" value="0" max="5"></progress>
+        <button type="submit">Registrar</button>
+        <div id="register-error" class="error"></div>
+      </form>
+    </section>
+    <hr>
+    <section id="login">
+      <h2>Login</h2>
+      <form id="login-form">
+        <label for="login-username">Usuário:</label>
+        <input type="text" id="login-username" name="username" required>
+        <label for="login-password">Senha:</label>
+        <input type="password" id="login-password" name="password" required>
+        <button type="submit">Login</button>
+        <div id="login-error" class="error"></div>
+      </form>
+    </section>
+
+    <section id="user-section" class="hidden">
+      <h2>Bem-vindo, <span id="user-name"></span>!</h2>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </section>
+  </main>
+
+  <script>
+    let registeredUser = null;
+
+    const progressBar = document.getElementById('progress-bar');
+    const registerForm = document.getElementById('register-form');
+    const inputs = registerForm.querySelectorAll('input');
+
+    inputs.forEach(input => {
+      input.addEventListener('input', updateProgressBar);
+    });
+
+    function updateProgressBar() {
+      let filled = 0;
+      inputs.forEach(input => {
+        if (input.value.trim() !== '') filled += 1;
+      });
+      progressBar.value = filled;
+    }
+
+    registerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
+      const cpf = document.getElementById('register-cpf').value;
+      const dob = document.getElementById('register-dob').value;
+      const address = document.getElementById('register-address').value;
+
+      if (username && password && cpf && dob && address) {
+        if (cpf.length === 11) {
+          registeredUser = { username, password, cpf, dob, address };
+          alert('Usuário registrado com sucesso!');
+          document.getElementById('register-error').textContent = '';
+        } else {
+          document.getElementById('register-error').textContent = 'O CPF deve conter 11 dígitos.';
+        }
+      } else {
+        document.getElementById('register-error').textContent = 'Por favor, preencha todos os campos.';
+      }
+    });
+
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      if (registeredUser && registeredUser.username === username && registeredUser.password === password) {
+        document.getElementById('user-name').textContent = username;
+        document.getElementById('login').classList.add('hidden');
+        document.getElementById('user-section').classList.remove('hidden');
+        document.getElementById('login-error').textContent = '';
+      } else {
+        document.getElementById('login-error').textContent = 'Usuário ou senha incorretos.';
+      }
+    });
+
+    function logout() {
+      document.getElementById('login').classList.remove('hidden');
+      document.getElementById('user-section').classList.add('hidden');
+    }
+
+    function showHelp() {
+      alert('Se precisar de ajuda, por favor entre em contato com nosso suporte através do email ');
+    }
+  </script>
+</body>
+</html>
